@@ -4,5 +4,7 @@ module.exports = {
     optimization: {
       splitChunks: false
     }
-  }
+  },
+  outputDir: "../../public/vendor/file-manager/",
+  filenameHashing: false
 };
