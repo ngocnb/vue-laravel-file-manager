@@ -13,7 +13,9 @@
     </div>
     <div class="modal-body">
       <div class="fm-btn-wrapper" v-show="!progressBar" @drop="handleFileDrop">
-        <div class="dropzone">Drop files here or click to select files</div>
+        <div class="dropzone cursor-pointer">
+          Drop files here or click to select files
+        </div>
         <input
           type="file"
           multiple
@@ -33,6 +35,9 @@
           </div>
           <div class="text-right">
             {{ bytesToHuman(item.size) }}
+          </div>
+          <div class="text-right cursor-pointer" @click="removeFile(index)">
+            <i class="far fa-trash-alt"></i>
           </div>
         </div>
         <hr />
@@ -166,12 +171,25 @@ export default {
     }
   },
   methods: {
-    handleFileDrop(e) {
-      const droppedFiles = e.dataTransfer.files;
+    /**
+     * Handle files dropped to dropzone
+     * @param event
+     */
+    handleFileDrop(event) {
+      const droppedFiles = event.dataTransfer.files;
       if (!droppedFiles) return;
       [...droppedFiles].forEach(f => {
         this.newFiles.push(f);
       });
+    },
+    /**
+     * Remove file from list
+     * @param index
+     */
+    removeFile(index) {
+      if (this.newFiles.length < index) return;
+
+      this.newFiles.splice(index, 1);
     },
     /**
      * Select file or files
@@ -249,6 +267,9 @@ export default {
 
   .fm-upload-info > .progress {
     margin-bottom: 1rem;
+  }
+  .cursor-pointer {
+    cursor: pointer;
   }
 }
 </style>
