@@ -23,6 +23,9 @@
           v-on:change="selectFiles($event)"
         />
       </div>
+      <div v-if="errorFiles.length > 0" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
       <div class="fm-upload-list" v-if="countFiles">
         <div
           class="d-flex justify-content-between"
@@ -134,6 +137,7 @@ export default {
     return {
       // selected files
       newFiles: [],
+      errorFiles: [],
 
       // overwrite if exists
       overwrite: 0
@@ -168,6 +172,26 @@ export default {
       }
 
       return this.bytesToHuman(size);
+    },
+
+    errorMessage() {
+      let message = "";
+      if (this.errorFiles.length === 0) return message;
+
+      for (let i = 0; i < this.errorFiles.length; i += 1) {
+        message += `"${this.errorFiles[i].name}"`;
+        if (i < this.errorFiles.length - 1) {
+          message += ", ";
+        }
+      }
+
+      if (this.errorFiles.length > 1) {
+        message += " are";
+      } else {
+        message += " is";
+      }
+
+      return message + " not allowed. Please choose only image or video files.";
     }
   },
   methods: {
@@ -176,11 +200,7 @@ export default {
      * @param event
      */
     handleFileDrop(event) {
-      const droppedFiles = event.dataTransfer.files;
-      if (!droppedFiles) return;
-      [...droppedFiles].forEach(f => {
-        this.newFiles.push(f);
-      });
+      this.handleSelectedFiles(event.dataTransfer.files);
     },
     /**
      * Remove file from list
@@ -196,17 +216,20 @@ export default {
      * @param event
      */
     selectFiles(event) {
-      console.log("event target files", event.target.files);
-      // files selected?
-      if (event.target.files.length === 0) {
-        // no file selected
-        this.newFiles = [];
-      } else {
-        // we have file or files
-        this.newFiles = event.target.files;
-      }
+      this.handleSelectedFiles(event.target.files);
     },
+    handleSelectedFiles(files) {
+      this.errorFiles = [];
 
+      if (!files) return;
+      [...files].forEach(f => {
+        if (this.isFileAllowed(f)) {
+          this.newFiles.push(f);
+        } else {
+          this.errorFiles.push(f);
+        }
+      });
+    },
     /**
      * Upload new files
      */
