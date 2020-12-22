@@ -42,27 +42,35 @@
               />
             </transition>
           </div>
-          <div class="col-sm-4 text-align-left">
-            Metadata
+          <div class="col-sm-4 text-align-left metadata-section">
             <div class="form-group">
-              <label for="alt">Alt</label>
+              <label for="alt">{{
+                lang.modal.preview.metadata.altLabel
+              }}</label>
               <input
                 type="text"
                 class="form-control"
                 id="alt"
-                placeholder="alt text"
+                :placeholder="lang.modal.preview.metadata.altPlaceholder"
                 v-model="alt"
               />
             </div>
             <div class="form-group">
-              <label for="caption">Caption</label>
+              <label for="caption">{{
+                lang.modal.preview.metadata.captionLabel
+              }}</label>
               <input
                 type="text"
                 class="form-control"
                 id="caption"
-                placeholder="caption text"
+                :placeholder="lang.modal.preview.metadata.captionPlaceholder"
                 v-model="caption"
               />
+            </div>
+            <div>
+              <button class="btn btn-success" v-on:click="saveMetadata">
+                {{ lang.btn.saveMetadata }}
+              </button>
             </div>
           </div>
         </div>
@@ -211,6 +219,24 @@ export default {
         this.alt = this.metadata.alt;
         this.caption = this.metadata.caption;
       }
+    },
+    saveMetadata() {
+      const formData = new FormData();
+      // add disk name
+      formData.append("disk", this.selectedDisk);
+      // add path
+      formData.append("path", this.selectedItem.path);
+      // add metadata
+      formData.append("alt", this.alt);
+      formData.append("caption", this.caption);
+
+      this.$store.dispatch("fm/updateMetadata", formData).then(response => {
+        // if file updated successfully
+        if (response.data.result.status === "success") {
+          // close modal window
+          this.hideModal();
+        }
+      });
     }
   }
 };
@@ -219,10 +245,14 @@ export default {
 <style lang="scss">
 .fm-modal-preview {
   .modal-body {
-    padding: 0;
+    padding: 10px 0;
 
     img {
       max-width: 100%;
+    }
+
+    .metadata-section {
+      border-left: thin solid #eee;
     }
   }
 

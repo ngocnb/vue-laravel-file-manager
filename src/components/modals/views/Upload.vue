@@ -14,7 +14,7 @@
     <div class="modal-body">
       <div class="fm-btn-wrapper" v-show="!progressBar" @drop="handleFileDrop">
         <div class="dropzone cursor-pointer">
-          Drop files here or click to select files
+          {{ lang.modal.upload.dropzone.text }}
         </div>
         <input
           type="file"

@@ -208,6 +208,12 @@ export default {
     });
   },
 
+  updateMetadata({ getters, dispatch }, formData) {
+    return POST.updateMetadata(formData).then(response => {
+      return response;
+    });
+  },
+
   /**
    * Create new directory
    * @param getters
