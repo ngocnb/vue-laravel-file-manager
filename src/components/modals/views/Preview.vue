@@ -1,57 +1,118 @@
 <template>
-    <div class="modal-content fm-modal-preview">
-        <div class="modal-header">
-            <h5 class="modal-title w-75 text-truncate">
-                {{ showCropperModule ? lang.modal.cropper.title : lang.modal.preview.title }}
-                <small class="text-muted pl-3">{{ selectedItem.basename }}</small>
-            </h5>
-            <button type="button" class="close" aria-label="Close" v-on:click="hideModal">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body text-center">
+  <div class="modal-content fm-modal-preview">
+    <div class="modal-header">
+      <h5 class="modal-title w-75 text-truncate">
+        {{
+          showCropperModule
+            ? lang.modal.cropper.title
+            : lang.modal.preview.title
+        }}
+        <small class="text-muted pl-3">{{ selectedItem.basename }}</small>
+      </h5>
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        v-on:click="hideModal"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body text-center">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-8">
             <template v-if="showCropperModule">
-                <cropper-module v-bind:imgSrc="imgSrc"
-                                v-bind:maxHeight="maxHeight"
-                                v-on:closeCropper="closeCropper"/>
+              <cropper-module
+                v-bind:imgSrc="imgSrc"
+                v-bind:maxHeight="maxHeight"
+                v-on:closeCropper="closeCropper"
+              />
             </template>
             <transition v-else name="fade" mode="out-in">
-                <i v-if="!imgSrc" class="fas fa-spinner fa-spin fa-5x p-5 text-muted"/>
-                <img v-else
-                     v-bind:src="imgSrc"
-                     v-bind:alt="selectedItem.basename"
-                     v-bind:style="{'max-height': maxHeight+'px'}">
+              <i
+                v-if="!imgSrc"
+                class="fas fa-spinner fa-spin fa-5x p-5 text-muted"
+              />
+              <img
+                v-else
+                v-bind:src="imgSrc"
+                v-bind:alt="selectedItem.basename"
+                v-bind:style="{ 'max-height': maxHeight + 'px' }"
+              />
             </transition>
+          </div>
+          <div class="col-sm-4 text-align-left metadata-section">
+            <div class="form-group">
+              <label for="alt">{{
+                lang.modal.preview.metadata.altLabel
+              }}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="alt"
+                :placeholder="lang.modal.preview.metadata.altPlaceholder"
+                v-model="alt"
+              />
+            </div>
+            <div class="form-group">
+              <label for="caption">{{
+                lang.modal.preview.metadata.captionLabel
+              }}</label>
+              <input
+                type="text"
+                class="form-control"
+                id="caption"
+                :placeholder="lang.modal.preview.metadata.captionPlaceholder"
+                v-model="caption"
+              />
+            </div>
+            <div>
+              <button class="btn btn-success" v-on:click="saveMetadata">
+                {{ lang.btn.saveMetadata }}
+              </button>
+            </div>
+          </div>
         </div>
-        <div v-if="showFooter" class="d-flex justify-content-between">
-            <span class="d-block">
-                <button class="btn btn-info"
-                        v-bind:title="lang.modal.cropper.title" v-on:click="showCropperModule = true">
-                    <i class="fas fa-crop-alt"/>
-                </button>
-            </span>
-            <span class="d-block">
-                <button class="btn btn-light" v-on:click="hideModal">{{ lang.btn.cancel }}</button>
-            </span>
-        </div>
+      </div>
     </div>
+    <div v-if="showFooter" class="d-flex justify-content-between">
+      <span class="d-block">
+        <button
+          class="btn btn-info"
+          v-bind:title="lang.modal.cropper.title"
+          v-on:click="showCropperModule = true"
+        >
+          <i class="fas fa-crop-alt" />
+        </button>
+      </span>
+      <span class="d-block">
+        <button class="btn btn-light" v-on:click="hideModal">
+          {{ lang.btn.cancel }}
+        </button>
+      </span>
+    </div>
+  </div>
 </template>
 
 <script>
-import CropperModule from '../additions/Cropper.vue';
-import modal from '../mixins/modal';
-import translate from '../../../mixins/translate';
-import helper from '../../../mixins/helper';
-import GET from '../../../http/get';
+import CropperModule from "../additions/Cropper.vue";
+import modal from "../mixins/modal";
+import translate from "../../../mixins/translate";
+import helper from "../../../mixins/helper";
+import GET from "../../../http/get";
 
 export default {
-  name: 'Preview',
+  name: "Preview",
   mixins: [modal, translate, helper],
   components: { CropperModule },
   data() {
     return {
       showCropperModule: false,
-      imgSrc: '',
+      imgSrc: "",
+      alt: "",
+      caption: "",
+      metadata: {}
     };
   },
   created() {
@@ -63,7 +124,7 @@ export default {
      * @return {*}
      */
     auth() {
-      return this.$store.getters['fm/settings/authHeader'];
+      return this.$store.getters["fm/settings/authHeader"];
     },
 
     /**
@@ -71,7 +132,7 @@ export default {
      * @returns {*}
      */
     selectedDisk() {
-      return this.$store.getters['fm/selectedDisk'];
+      return this.$store.getters["fm/selectedDisk"];
     },
 
     /**
@@ -79,7 +140,7 @@ export default {
      * @returns {*}
      */
     selectedItem() {
-      return this.$store.getters['fm/selectedItems'][0];
+      return this.$store.getters["fm/selectedItems"][0];
     },
 
     /**
@@ -87,7 +148,9 @@ export default {
      * @return boolean
      */
     showFooter() {
-      return this.canCrop(this.selectedItem.extension) && !this.showCropperModule;
+      return (
+        this.canCrop(this.selectedItem.extension) && !this.showCropperModule
+      );
     },
 
     /**
@@ -100,7 +163,7 @@ export default {
       }
 
       return 300;
-    },
+    }
   },
   methods: {
     /**
@@ -109,7 +172,9 @@ export default {
      * @returns {boolean}
      */
     canCrop(extension) {
-      return this.$store.state.fm.settings.cropExtensions.includes(extension.toLowerCase());
+      return this.$store.state.fm.settings.cropExtensions.includes(
+        extension.toLowerCase()
+      );
     },
 
     /**
@@ -123,40 +188,77 @@ export default {
     /**
      * Load image
      */
-    loadImage() {
+    async loadImage() {
       // if authorization required
       if (this.auth) {
-        GET.preview(
-          this.selectedDisk,
-          this.selectedItem.path,
-        ).then((response) => {
-          const mimeType = response.headers['content-type'].toLowerCase();
-          const imgBase64 = Buffer.from(response.data, 'binary').toString('base64');
+        GET.preview(this.selectedDisk, this.selectedItem.path).then(
+          response => {
+            const mimeType = response.headers["content-type"].toLowerCase();
+            const imgBase64 = Buffer.from(response.data, "binary").toString(
+              "base64"
+            );
 
-          this.imgSrc = `data:${mimeType};base64,${imgBase64}`;
-        });
+            this.imgSrc = `data:${mimeType};base64,${imgBase64}`;
+          }
+        );
       } else {
-        this.imgSrc = `${this.$store.getters['fm/settings/baseUrl']}preview?disk=${this.selectedDisk}&path=${encodeURIComponent(this.selectedItem.path)}&v=${this.selectedItem.timestamp}`;
+        this.imgSrc = `${
+          this.$store.getters["fm/settings/baseUrl"]
+        }preview?disk=${this.selectedDisk}&path=${encodeURIComponent(
+          this.selectedItem.path
+        )}&v=${this.selectedItem.timestamp}`;
+      }
+
+      // load metadata
+      const result = await this.$store.dispatch("fm/getMetadata", {
+        disk: this.selectedDisk,
+        path: this.selectedItem.path
+      });
+      if (result.data.data !== undefined) {
+        this.metadata = result.data.data;
+        this.alt = this.metadata.alt;
+        this.caption = this.metadata.caption;
       }
     },
-  },
+    saveMetadata() {
+      const formData = new FormData();
+      // add disk name
+      formData.append("disk", this.selectedDisk);
+      // add path
+      formData.append("path", this.selectedItem.path);
+      // add metadata
+      formData.append("alt", this.alt);
+      formData.append("caption", this.caption);
+
+      this.$store.dispatch("fm/updateMetadata", formData).then(response => {
+        // if file updated successfully
+        if (response.data.result.status === "success") {
+          // close modal window
+          this.hideModal();
+        }
+      });
+    }
+  }
 };
 </script>
 
 <style lang="scss">
-    .fm-modal-preview {
+.fm-modal-preview {
+  .modal-body {
+    padding: 10px 0;
 
-        .modal-body {
-            padding: 0;
-
-            img {
-                max-width: 100%;
-            }
-        }
-
-        & > .d-flex {
-            padding: 1rem;
-            border-top: 1px solid #e9ecef;
-        }
+    img {
+      max-width: 100%;
     }
+
+    .metadata-section {
+      border-left: thin solid #eee;
+    }
+  }
+
+  & > .d-flex {
+    padding: 1rem;
+    border-top: 1px solid #e9ecef;
+  }
+}
 </style>

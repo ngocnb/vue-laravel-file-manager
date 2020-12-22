@@ -1,4 +1,4 @@
-import HTTP from './axios';
+import HTTP from "./axios";
 
 export default {
   /**
@@ -9,7 +9,7 @@ export default {
    * @returns {AxiosPromise<any>}
    */
   createFile(disk, path, name) {
-    return HTTP.post('create-file', { disk, path, name });
+    return HTTP.post("create-file", { disk, path, name });
   },
 
   /**
@@ -18,7 +18,16 @@ export default {
    * @returns {*}
    */
   updateFile(formData) {
-    return HTTP.post('update-file', formData);
+    return HTTP.post("update-file", formData);
+  },
+
+  /**
+   * Update metadata
+   * @param formData
+   * @returns {*}
+   */
+  updateMetadata(formData) {
+    return HTTP.post("update-metadata", formData);
   },
 
   /**
@@ -27,7 +36,7 @@ export default {
    * @returns {*}
    */
   createDirectory(data) {
-    return HTTP.post('create-directory', data);
+    return HTTP.post("create-directory", data);
   },
 
   /**
@@ -37,7 +46,7 @@ export default {
    * @returns {AxiosPromise<any>}
    */
   upload(data, config) {
-    return HTTP.post('upload', data, config);
+    return HTTP.post("upload", data, config);
   },
 
   /**
@@ -46,7 +55,7 @@ export default {
    * @returns {*}
    */
   delete(data) {
-    return HTTP.post('delete', data);
+    return HTTP.post("delete", data);
   },
 
   /**
@@ -55,7 +64,7 @@ export default {
    * @returns {*}
    */
   rename(data) {
-    return HTTP.post('rename', data);
+    return HTTP.post("rename", data);
   },
 
   /**
@@ -64,7 +73,7 @@ export default {
    * @returns {*}
    */
   paste(data) {
-    return HTTP.post('paste', data);
+    return HTTP.post("paste", data);
   },
 
   /**
@@ -73,7 +82,7 @@ export default {
    * @returns {*}
    */
   zip(data) {
-    return HTTP.post('zip', data);
+    return HTTP.post("zip", data);
   },
 
   /**
@@ -82,6 +91,6 @@ export default {
    * @param data
    */
   unzip(data) {
-    return HTTP.post('unzip', data);
-  },
+    return HTTP.post("unzip", data);
+  }
 };
