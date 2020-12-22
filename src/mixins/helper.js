@@ -217,12 +217,6 @@ export default {
       return "fa-file";
     },
     isFileAllowed(file) {
-      console.log("isFileAllowed");
-      console.log(
-        "process.env.VUE_APP_ALLOWED_FILE_TYPES",
-        process.env.VUE_APP_ALLOWED_FILE_TYPES
-      );
-      console.log("file.type", file.type);
       if (
         process.env.VUE_APP_ALLOWED_FILE_TYPES === undefined ||
         process.env.VUE_APP_ALLOWED_FILE_TYPES === ""
@@ -233,7 +227,6 @@ export default {
       const allowedFileTypes = process.env.VUE_APP_ALLOWED_FILE_TYPES.split(
         ","
       );
-      console.log("allowedFileTypes", allowedFileTypes);
       return allowedFileTypes.includes(file.type);
     }
   }
