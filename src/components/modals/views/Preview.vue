@@ -218,6 +218,13 @@ export default {
         this.metadata = result.data.data;
         this.alt = this.metadata.alt;
         this.caption = this.metadata.caption;
+
+        if (this.alt === "null") {
+          this.alt = "";
+        }
+        if (this.caption === "null") {
+          this.caption = "";
+        }
       }
     },
     saveMetadata() {
